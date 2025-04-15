@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { getLogs } from '../services/api';
+// import { getLogs } from '../services/api';
 
 const Dashboard = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    getLogs()
-      .then((data) => {
-        setLogs(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch logs:', error);
-        setLoading(false);
-      });
-  }, []);
+//   useEffect(() => {
+//     getLogs()
+//       .then((data) => {
+//         setLogs(data);
+//         setLoading(false);
+//       })
+//       .catch((error) => {
+//         console.error('Failed to fetch logs:', error);
+//         setLoading(false);
+//       });
+//   }, []);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

@@ -17,6 +17,9 @@ import Home from './pages/Home';
 // import SignIn from './auth/SignIn';
 // import SignUp from './auth/SignUp';
 
+
+
+
 const App = () => {
   return (
     <Router>
