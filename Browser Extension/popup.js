@@ -1,4 +1,4 @@
 document.getElementById("open-dashboard").addEventListener("click", () => {
-    chrome.tabs.create({ url: "https://your-dashboard.com" });
+    chrome.tabs.create({ url: "http://localhost:5173" });
   });
   
