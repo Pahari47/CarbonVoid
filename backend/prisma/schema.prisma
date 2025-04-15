@@ -1,9 +1,29 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String    // Added for auth
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  activities Activity[]
+}
+
+model Activity {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  service     String   // "youtube", "netflix", etc.
+  duration    Int      // in minutes
+  dataUsed    Float    // in MB
+  resolution  String?   // "HD", "4K", etc.
+  createdAt   DateTime @default(now())
 }
