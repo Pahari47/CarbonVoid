@@ -1,47 +1,36 @@
 {
-    "manifest_version": 3,
-    "name": "CarbonCrumbs Tracker",
-    "version": "1.0",
-    "description": "Track your digital activity's carbon footprint.",
-    "permissions": [
-      "tabs",
-      "activeTab",
-      "scripting",
-      "storage"
-    ],
-    "host_permissions": [
-      "*://*.youtube.com/*",
-      "*://*.netflix.com/*",
-      "*://mail.google.com/*",
-      "*://outlook.live.com/*",
-      "*://*.zoom.us/*",
-      "*://*.drive.google.com/*",
-      "*://*.dropbox.com/*",
-      "*://chat.openai.com/*"
-    ],
-    "background": {
-      "service_worker": "background.js"
+  "manifest_version": 3,
+  "name": "CarbonCrumbs",
+  "version": "1.0",
+  "description": "Track YouTube and Email carbon footprint",
+  "permissions": ["storage", "tabs", "scripting"],
+  "host_permissions": [
+    "*://www.youtube.com/*",
+    "*://mail.google.com/*",
+    "*://outlook.live.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/watch*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
     },
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": {"16":"icons/icon16.png"}
-    },
-    "content_scripts": [    
-      {
-        "matches": [
-          "*://*.youtube.com/*",
-          "*://*.netflix.com/*",
-          "*://mail.google.com/*",
-          "*://outlook.live.com/*",
-          "*://*.zoom.us/*",
-          "*://*.drive.google.com/*",
-          "*://*.dropbox.com/*",
-          "*://chat.openai.com/*"
-        ],
-        "js": ["content.js"]
-      }
-    ],
-    "icons": {
-      "16": "icons/icon16.png"
+    {
+      "matches": ["*://mail.google.com/*", "*://outlook.live.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
     }
-  }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

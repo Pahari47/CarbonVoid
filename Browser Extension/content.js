@@ -1,28 +1,106 @@
-const site = location.hostname;
-const timestamp = new Date().toISOString();
+(() => {
+  const site = location.hostname;
+  const timestamp = new Date().toISOString();
 
-let category = null;
+  if (window.top !== window.self || location.href === 'about:blank') {
+    console.log("Skipping execution in iframe or about:blank");
+    return;
+  }
 
-if (site.includes("youtube.com")) category = "streaming_youtube";
-else if (site.includes("netflix.com")) category = "streaming_netflix";
-else if (site.includes("mail.google.com") || site.includes("outlook.live.com")) category = "email";
-else if (site.includes("zoom.us")) category = "video_call";
-else if (site.includes("drive.google.com") || site.includes("dropbox.com")) category = "cloud_storage";
-else if (site.includes("chat.openai.com")) category = "ai_query";
+  let category = null;
 
-let sessionStart = Date.now();
+  if (site.includes("youtube.com")) {
+    category = "streaming_youtube";
 
-window.addEventListener("beforeunload", () => {
-  const duration = (Date.now() - sessionStart) / 1000;
+    let videoData = {
+      durationMinutes: 0,
+      dataUsedMb: 0,
+      resolution: 'unknown'
+    };
 
-  fetch("https://your-backend.com/api/log-activity", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      url: location.href,
-      timestamp,
-      duration,
-      category
-    })
+    const dataRates = {
+      '3840x2160': 15.98,
+      '2560x1440': 8.91,
+      '1920x1080': 5.93,
+      '1280x720': 2.97,
+      'unknown': 3.0
+    };
+
+    function getVideoResolution(video) {
+      return `${video.videoWidth}x${video.videoHeight}`;
+    }
+
+    function estimateDataUsage(resolution, durationMinutes) {
+      const closest = Object.keys(dataRates).find(r => resolution.includes(r)) || 'unknown';
+      return (dataRates[closest] * durationMinutes).toFixed(2);
+    }
+
+    function startTracking(video) {
+      console.log("[CarbonCrumbs] Tracking video started.");
+
+      let watchedSeconds = 0;
+
+      setInterval(() => {
+        if (!video.paused && !video.ended) {
+          watchedSeconds += 5; // increment by interval
+
+          const durationMinutes = (watchedSeconds / 60).toFixed(2);
+
+          // Update resolution once at the start or if still unknown
+          if (videoData.resolution === 'unknown' || watchedSeconds <= 10) {
+            videoData.resolution = getVideoResolution(video);
+          }
+
+          videoData.durationMinutes = durationMinutes;
+          videoData.dataUsedMb = estimateDataUsage(videoData.resolution, durationMinutes);
+
+          chrome.runtime.sendMessage({
+            type: 'youtubeStats',
+            data: videoData
+          });
+
+          console.log("[CarbonCrumbs] Data sent:", videoData);
+        }
+      }, 5000); // update every 5 seconds
+    }
+
+    const observer = new MutationObserver(() => {
+      const video = document.querySelector('video');
+      if (video && !video.__carbonCrumbsTracked) {
+        video.__carbonCrumbsTracked = true;
+        startTracking(video);
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    const existingVideo = document.querySelector('video');
+    if (existingVideo && !existingVideo.__carbonCrumbsTracked) {
+      existingVideo.__carbonCrumbsTracked = true;
+      startTracking(existingVideo);
+    }
+
+  } else if (
+    site.includes("mail.google.com") ||
+    site.includes("outlook.live.com")
+  ) {
+    category = "email";
+  }
+
+  let sessionStart = Date.now();
+
+  window.addEventListener("beforeunload", () => {
+    const duration = (Date.now() - sessionStart) / 1000;
+
+    // fetch("", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     url: location.href,
+    //     timestamp,
+    //     duration,
+    //     category
+    //   })
+    // });
   });
-});
+})();
