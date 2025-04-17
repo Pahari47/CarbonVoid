@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String              @id @default(uuid())
+  name       String
+  email      String              @unique
+  password   String
+  activities Activity[]          @relation("UserActivities")
+  footprint  UserFootprintCache? @relation("UserFootprint")
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+}
+
+model Activity {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation("UserActivities", fields: [userId], references: [id])
+  service    String
+  duration   Int
+  dataUsed   Float
+  resolution String?
+  co2e       Float
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model UserFootprintCache {
+  userId        String   @id
+  totalCO2e     Float
+  activityCount Int
+  updatedAt     DateTime @updatedAt
+  user          User     @relation("UserFootprint", fields: [userId], references: [id])
+
+  @@index([totalCO2e])
+}
