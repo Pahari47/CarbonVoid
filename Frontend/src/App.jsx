@@ -20,6 +20,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Features from './pages/Features';
+import TrendsInsights from './pages/TrendsInsights';
 
 const App = () => {
   return (
@@ -40,6 +41,7 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/features" element={<Features />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path='/trends-insights' element={<TrendsInsights />} />
 
             {/* Protected Routes */}
             <Route
