@@ -1,102 +1,108 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 
 const GreenSuggestions = () => {
   const [userData, setUserData] = useState({
     cloudStorage: '',
-    videoHours: '',
     screenTime: '',
   });
+  const [co2Emission, setCo2Emission] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Handle form input changes
-  const handleInputChange = (e) => {
-    setUserData({
-      ...userData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/user-usage');
+        const { cloudStorage, screenTime, totalCO2 } = response.data;
+        setUserData({ cloudStorage, screenTime });
+        setCo2Emission(totalCO2);
+      } catch (error) {
+        console.error("Error fetching usage data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
-  // Fetch green suggestions from the backend
   const getGreenSuggestions = async () => {
+    setLoading(true);
     try {
       const response = await axios.post('http://localhost:5000/api/green-suggestions', userData);
       setSuggestions(response.data.suggestions);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Submit form to get suggestions
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    getGreenSuggestions();
-  };
-
   return (
-    <div className="mt-8 p-6 bg-white rounded-lg shadow-md max-w-lg mx-auto">
-      <h2 className="text-3xl font-semibold text-green-700 mb-6 text-center">🌿 Green Suggestions</h2>
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7 }}
+      className="mt-12 max-w-2xl mx-auto p-6 rounded-2xl shadow-2xl backdrop-blur-md bg-white/10 border border-white/20"
+    >
+      <h2 className="text-4xl font-bold text-green-400 mb-8 text-center">🌱 Eco Tips for You</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <label className="block text-lg font-medium text-gray-700">Cloud Storage Used (in GB):</label>
-          <input
-            type="number"
-            name="cloudStorage"
-            value={userData.cloudStorage}
-            onChange={handleInputChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Enter cloud storage used"
-            required
-          />
+      <div className="space-y-6 text-white">
+        <div>
+          <label className="block text-lg font-semibold text-green-100">☁️ Cloud Storage Used (in GB)</label>
+          <div className="p-3 mt-2 rounded-lg bg-white/20 text-white border border-white/30">
+            {userData.cloudStorage || 'Fetching...'}
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-lg font-medium text-gray-700">Video Streaming Hours:</label>
-          <input
-            type="number"
-            name="videoHours"
-            value={userData.videoHours}
-            onChange={handleInputChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Enter video streaming hours"
-            required
-          />
+        <div>
+          <label className="block text-lg font-semibold text-green-100">🖥️ Screen Time (in hours)</label>
+          <div className="p-3 mt-2 rounded-lg bg-white/20 text-white border border-white/30">
+            {userData.screenTime || 'Fetching...'}
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-lg font-medium text-gray-700">Screen Time (in hours):</label>
-          <input
-            type="number"
-            name="screenTime"
-            value={userData.screenTime}
-            onChange={handleInputChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Enter screen time"
-            required
-          />
+        <div>
+          <label className="block text-lg font-semibold text-green-100">🌍 Total CO₂ Emission</label>
+          <div className="p-3 mt-2 text-lg font-bold  text-white text-center rounded-xl shadow-inner">
+            {co2Emission !== null ? `${co2Emission} kg` : 'Calculating...'}
+          </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition duration-200"
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.03 }}
+          onClick={getGreenSuggestions}
+          disabled={loading}
+          className={`w-full py-3 rounded-xl text-white font-semibold transition duration-300 ${
+            loading
+              ? 'bg-gray-500 cursor-not-allowed'
+              : 'bg-green-600 hover:bg-green-700 shadow-lg'
+          }`}
         >
-          Get Suggestions
-        </button>
-      </form>
+          {loading ? 'Fetching Suggestions...' : 'Get Green Suggestions'}
+        </motion.button>
+      </div>
 
-      <div className="mt-8">
-        {suggestions.length === 0 ? (
-          <p className="text-gray-500 text-center">No suggestions available. Enter your data to get recommendations.</p>
+      <div className="mt-10">
+        {loading ? (
+          <p className="text-center text-gray-300">Loading suggestions...</p>
+        ) : suggestions.length === 0 ? (
+          <p className="text-center text-gray-400 mt-4">Click the button above to see recommendations 🌿</p>
         ) : (
           suggestions.map((suggestion, index) => (
-            <div key={index} className="bg-white p-4 rounded-lg shadow-md mt-4">
-              <p className="text-gray-800">{suggestion}</p>
-            </div>
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-white/20 border border-white/30 text-white p-4 rounded-lg shadow-md mt-4"
+            >
+              <p>✅ {suggestion}</p>
+            </motion.div>
           ))
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

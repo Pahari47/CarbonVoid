@@ -1,11 +1,12 @@
 import React from 'react';
+import { FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="border-t border-green-900 text-white py-8 relative z-50">
-      <div className="container mx-auto  flex flex-col md:flex-row justify-between items-center">
+    <footer className="border-t border-green-900 text-white py-8 mt-16 px-6 relative z-50">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         {/* Left Side - Quick Links */}
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8">
+        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8 text-center md:text-left">
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">Quick Links</h3>
             <ul className="space-y-2">
@@ -18,36 +19,57 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Middle - Call to Action (Join Waitlist) */}
-        <div className="mt-8 md:mt-0 flex flex-col items-center">
+        {/* Middle - Waitlist Signup */}
+        <div className="mt-8 md:mt-0 flex flex-col items-center text-center">
           <h3 className="text-lg font-semibold mb-4">Join the Waitlist</h3>
           <p className="mb-4">Stay updated on our mission to reduce carbon emissions.</p>
-          <form action="#" method="post" className="flex items-center space-x-4">
+          <form action="#" method="post" className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
             <input
               type="email"
               name="email"
               placeholder="Enter your email"
               className="px-4 py-2 rounded-lg text-black w-64"
             />
-            <button type="submit" className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600">Subscribe</button>
+            <button type="submit" className="bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition duration-300">Subscribe</button>
           </form>
         </div>
 
-        {/* Right Side - Social Links & Trust Signals */}
-        <div className="mt-8 md:mt-0 flex flex-col  items-center md:items-end">
-          <div className="space-x-4 mb-4">
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-500">
-              <i className="fab fa-linkedin fa-2x"></i>
+        {/* Right Side - Social Icons */}
+        <div className="mt-8 md:mt-0 flex flex-col items-center md:items-end">
+          <div className="flex space-x-4 mb-4">
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white hover:text-green-400 transition duration-300 transform hover:scale-110"
+            >
+              <FaLinkedin size={24} />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-500">
-              <i className="fab fa-twitter fa-2x"></i>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white hover:text-green-400 transition duration-300 transform hover:scale-110"
+            >
+              <FaTwitter size={24} />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-green-500">
-              <i className="fab fa-instagram fa-2x"></i>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white hover:text-green-400 transition duration-300 transform hover:scale-110"
+            >
+              <FaInstagram size={24} />
             </a>
           </div>
-          <p className="text-sm text-gray-400">© 2025 CarboVoid, All rights reserved.</p>
-          <p className="text-sm text-gray-400 mt-2">Partners: <span className="font-semibold">GreenTech, EcoPartnership</span></p>
+        </div>
+      </div>
+
+      {/* Bottom Center - Copyright */}
+      <div className="mt-8">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-2 text-sm text-gray-400 text-center">
+          <p>© 2025 CarboVoid, All rights reserved.</p>
+          <p className="sm:ml-4">Partners: <span className="font-semibold">GreenTech, EcoPartnership</span></p>
         </div>
       </div>
     </footer>
