@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import greenBotChain from '../chains/greenBotChain.js';  // Ensure this path is correct
+import greenBotChain from '../chains/greenBotChain';  // Ensure this path is correct
+import asyncHandler from '../utils/asynHandler';  // Ensure this path is correct
 
-export const handleChat = async (req: Request, res: Response): Promise<Response> => {
+export const handleChat = asyncHandler(async (req: Request, res: Response) => {
   const { message } = req.body;
 
   // Ensure the message exists in the request body
@@ -23,4 +24,4 @@ export const handleChat = async (req: Request, res: Response): Promise<Response>
     console.error('ChatController Error:', err);
     return res.status(500).json({ error: 'GreenBot failed to respond.', details: err.message });
   }
-};
+});

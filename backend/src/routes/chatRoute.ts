@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { handleChat } from '../controllers/chatController.js';  // Ensure this path is correct
+import { handleChat } from '../controllers/chatController';  // Ensure this path is correct
 
 const router = Router();
 

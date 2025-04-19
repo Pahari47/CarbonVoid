@@ -1,6 +1,6 @@
 import { ConversationChain } from 'langchain/chains';
 import { BufferMemory } from 'langchain/memory';
-import localLLM from '../llm/localLLM.js';
+import localLLM from '../llm/localLLM'; // Ensure this path is correct
 
 const memory = new BufferMemory();
 
