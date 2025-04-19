@@ -36,9 +36,16 @@ const activities = {
 
 const iconVariants = {
   hover: {
-    scale: 1.2,
-    rotate: 10,
-    transition: { type: "spring", stiffness: 300, damping: 10 }
+    scale: 1.3,
+    rotate: [0, 10, -10, 0],
+    transition: { 
+      type: "spring", 
+      stiffness: 300, 
+      damping: 10,
+      duration: 1,
+      repeat: Infinity,
+      repeatType: "reverse"
+    }
   },
   tap: {
     scale: 0.9
@@ -57,6 +64,28 @@ const cardVariants = {
       type: "spring",
       bounce: 0.4,
       duration: 0.8
+    }
+  }
+};
+
+const textGlowVariants = {
+  hidden: { 
+    opacity: 0,
+    textShadow: "0 0 0px rgba(74, 222, 128, 0)"
+  },
+  visible: {
+    opacity: 1,
+    textShadow: [
+      "0 0 0px rgba(74, 222, 128, 0)",
+      "0 0 10px rgba(74, 222, 128, 0.5)",
+      "0 0 20px rgba(74, 222, 128, 0.3)",
+      "0 0 10px rgba(74, 222, 128, 0.5)",
+      "0 0 0px rgba(74, 222, 128, 0)"
+    ],
+    transition: {
+      duration: 4,
+      repeat: Infinity,
+      ease: "easeInOut"
     }
   }
 };
@@ -107,6 +136,38 @@ const Home = () => {
     },
   ];
   const [activeTips, setActiveTips] = useState([0, 1, 2]);
+
+  // User reviews data
+  const userReviews = [
+    {
+      name: "Alex Johnson",
+      role: "Sustainability Manager",
+      avatar: "👨‍💼",
+      review: "CarboVoid helped our company reduce digital emissions by 28% in just 3 months!",
+      rating: 5
+    },
+    {
+      name: "Sarah Williams",
+      role: "Digital Nomad",
+      avatar: "👩‍💻",
+      review: "The AI suggestions are incredibly practical. I've cut my carbon footprint without changing my workflow.",
+      rating: 5
+    },
+    {
+      name: "Michael Chen",
+      role: "IT Director",
+      avatar: "👨‍🔧",
+      review: "The ESG reports saved us dozens of hours in sustainability reporting. Highly recommended!",
+      rating: 4
+    },
+    {
+      name: "Emma Rodriguez",
+      role: "Environmental Activist",
+      avatar: "👩‍🌾",
+      review: "Finally a tool that makes digital carbon footprint tangible and actionable.",
+      rating: 5
+    }
+  ];
 
   // Scroll button visibility
   useEffect(() => {
@@ -200,6 +261,45 @@ const Home = () => {
     }
   };
 
+  // Animation for the welcome text
+  const welcomeVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const letterVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 200
+      }
+    }
+  };
+
+  const renderWelcomeText = () => {
+    const text = "Welcome to CarboVoid";
+    return text.split("").map((char, i) => (
+      <motion.span
+        key={i}
+        variants={letterVariants}
+        style={{ display: "inline-block" }}
+        className={char === " " ? "mx-1" : ""}
+      >
+        {char === " " ? "\u00A0" : char}
+      </motion.span>
+    ));
+  };
+
   return (
     <div className="relative w-full min-h-screen overflow-x-hidden text-white bg-black">
       {/* Scroll progress indicator */}
@@ -233,15 +333,35 @@ const Home = () => {
       {/* Hero Section */}
       <div className="relative z-10 flex flex-col items-center justify-center h-[75vh] px-6">
         <div className="max-w-3xl text-center">
-          <motion.h1
+          <motion.div
             initial="hidden"
             animate="visible"
-            variants={textVariants}
-            whileHover="hover"
+            variants={welcomeVariants}
             className="text-4xl md:text-6xl font-extrabold mb-4"
           >
-            Welcome to <span className="text-green-400">CarboVoid</span> 🌱
-          </motion.h1>
+            <motion.div
+              className="inline-block"
+              variants={textGlowVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {renderWelcomeText()}
+            </motion.div>
+            <motion.span 
+              className="text-green-400 ml-2"
+              animate={{
+                rotate: [0, 10, -10, 0],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            >
+              🌱
+            </motion.span>
+          </motion.div>
 
           <SignedIn>
             <motion.p
@@ -269,7 +389,13 @@ const Home = () => {
               AI-powered insights.
             </motion.p>
             <div className="flex justify-center space-x-4 mb-6">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div 
+                whileHover={{ scale: 1.05 }} 
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+              >
                 <Link
                   to="/sign-in"
                   className="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition"
@@ -277,7 +403,13 @@ const Home = () => {
                   Sign In
                 </Link>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div 
+                whileHover={{ scale: 1.05 }} 
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+              >
                 <Link
                   to="/sign-up"
                   className="border border-green-400 text-green-400 px-6 py-2 rounded-full hover:bg-green-100 transition"
@@ -365,21 +497,37 @@ const Home = () => {
               viewport={{ once: true, amount: 0.2 }}
               variants={cardVariants}
               custom={index}
+              className="flex"
             >
               <Link
                 to={link}
-                className="bg-white/10 text-white p-6 rounded-2xl shadow-xl hover:bg-white/20 transition-all duration-300 text-center flex flex-col items-center"
+                className="bg-white/10 text-white p-6 rounded-2xl shadow-xl hover:bg-white/20 transition-all duration-300 flex flex-col items-center flex-1 min-h-[300px]"
               >
                 <motion.div
-                  className="text-4xl mb-4"
+                  className="text-5xl mb-6"
                   variants={iconVariants}
                   whileHover="hover"
                   whileTap="tap"
+                  animate={{
+                    y: [0, -10, 0],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
                 >
                   {icon}
                 </motion.div>
-                <h3 className="text-xl font-semibold mb-2">{title}</h3>
-                <p>{desc}</p>
+                <h3 className="text-xl font-semibold mb-4 text-center">{title}</h3>
+                <p className="text-center flex-grow">{desc}</p>
+                <motion.div
+                  className="mt-4 text-green-400"
+                  whileHover={{ x: 5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  Learn more →
+                </motion.div>
               </Link>
             </motion.div>
           ))}
@@ -475,7 +623,7 @@ const Home = () => {
           return (
             <motion.div
               key={i}
-              className="mx-4 bg-white/10 p-6 rounded-xl shadow-xl text-white backdrop-blur-md hover:scale-105 transition-all duration-300"
+              className="mx-4 bg-white/10 p-6 rounded-xl shadow-xl text-white backdrop-blur-md hover:scale-105 transition-all duration-300 min-h-[250px] flex flex-col"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
@@ -487,12 +635,12 @@ const Home = () => {
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                whileHover={{ rotate: 10, scale: 1.1 }}
+                whileHover={{ rotate: [0, 10, -10, 0], scale: 1.1 }}
               >
                 {icon}
               </motion.div>
               <motion.p
-                className="text-lg font-medium text-center"
+                className="text-lg font-medium text-center flex-grow"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 0.5 }}
@@ -504,6 +652,61 @@ const Home = () => {
         })}
       </div>
 
+      {/* User Reviews Section */}
+      <div className="relative z-20 w-full max-w-6xl mx-auto px-6 my-20">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-3xl font-extrabold text-center text-white mb-10"
+        >
+          What Our Users Say
+        </motion.h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {userReviews.map((review, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-green-900/30 to-black/50 p-6 rounded-xl border border-green-500/20 shadow-lg hover:shadow-green-500/20 transition-all duration-300"
+            >
+              <div className="flex items-center mb-4">
+                <motion.div 
+                  className="text-3xl mr-4"
+                  whileHover={{ scale: 1.2, rotate: 10 }}
+                >
+                  {review.avatar}
+                </motion.div>
+                <div>
+                  <h3 className="font-bold text-lg">{review.name}</h3>
+                  <p className="text-green-300 text-sm">{review.role}</p>
+                </div>
+              </div>
+              <motion.p 
+                className="text-gray-200 mb-4"
+                whileHover={{ scale: 1.02 }}
+              >
+                "{review.review}"
+              </motion.p>
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <motion.span
+                    key={i}
+                    className={`text-xl ${i < review.rating ? 'text-yellow-400' : 'text-gray-500'}`}
+                    whileHover={{ scale: 1.2 }}
+                  >
+                    ★
+                  </motion.span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
 
       <Footer />
     </div>
