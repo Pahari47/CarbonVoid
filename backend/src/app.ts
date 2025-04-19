@@ -6,6 +6,7 @@ import suggetionRoutes from './routes/suggetionRoute';
 import emissionRoutes from './routes/emmisiontimeRoute';
 import declutterRoutes from './routes/declutterRoutes';
 import chatRoutes from './routes/chatRoute';
+import activitystateRoutes from './routes/activitystateRoute';
 import cors from 'cors';
 
 const app = express();
@@ -39,6 +40,7 @@ app.use('/api/suggestions', suggetionRoutes);
 app.use('/api/emissions', emissionRoutes);
 app.use('/api/declutters', declutterRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/activitystate', activitystateRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
