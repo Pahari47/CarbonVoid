@@ -1,41 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { useUser, SignedIn, SignedOut, SignOutButton } from '@clerk/clerk-react';
+import { useUser, useAuth, SignedIn, SignedOut, SignOutButton } from '@clerk/clerk-react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const { isLoaded, user } = useUser();
+  const { getToken } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncError, setSyncError] = useState(null);
 
   // Function to send user data to backend
   const sendUserToBackend = async (clerkUser) => {
-    if (!clerkUser) return;
+    if (!clerkUser || !isLoaded) return;
     
+    setIsSyncing(true);
+    setSyncError(null);
+
     try {
       const userData = {
         userId: clerkUser.id,
-        name: clerkUser.fullName || clerkUser.username,
-        email: clerkUser.primaryEmailAddress?.emailAddress
+        name: clerkUser.fullName || clerkUser.username || 'Anonymous',
+        email: clerkUser.primaryEmailAddress?.emailAddress,
+        password: null
       };
 
-      const response = await fetch('/api/users/sync', {
+      const token = await getToken();
+
+      const response = await fetch('http://localhost:3000/api/user/sync', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${await clerkUser.getToken()}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(userData)
       });
 
       if (!response.ok) {
-        throw new Error('Failed to sync user data');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to sync user data');
       }
       
       const data = await response.json();
       console.log('User synced successfully:', data);
     } catch (error) {
       console.error('Error syncing user:', error);
+      setSyncError(error.message);
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -71,14 +84,22 @@ const Navbar = () => {
         {/* Auth Buttons - Desktop */}
         <div className="hidden md:flex items-center space-x-4">
           <SignedIn>
-            <span className="text-green-400 font-medium">
-              Welcome, {user?.firstName || user?.username}
-            </span>
-            <SignOutButton>
-              <button className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-300 ease-in-out">
-                Logout
-              </button>
-            </SignOutButton>
+            <div className="flex items-center space-x-4">
+              {isSyncing && (
+                <span className="text-yellow-400 text-sm">Syncing...</span>
+              )}
+              {syncError && (
+                <span className="text-red-400 text-sm">{syncError}</span>
+              )}
+              <span className="text-green-400 font-medium">
+                Welcome, {user?.firstName || user?.username || 'User'}
+              </span>
+              <SignOutButton>
+                <button className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-300 ease-in-out">
+                  Logout
+                </button>
+              </SignOutButton>
+            </div>
           </SignedIn>
 
           <SignedOut>
@@ -95,6 +116,7 @@ const Navbar = () => {
         <button
           className="md:hidden text-green-400 focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle menu"
         >
           <motion.div
             animate={{ rotate: isOpen ? 180 : 0 }}
@@ -115,11 +137,17 @@ const Navbar = () => {
           transition={{ duration: 0.3 }}
         >
           <SignedIn>
-            {user && (
+            <div className="flex flex-col space-y-2">
+              {isSyncing && (
+                <span className="text-yellow-400 text-sm">Syncing...</span>
+              )}
+              {syncError && (
+                <span className="text-red-400 text-sm">{syncError}</span>
+              )}
               <span className="text-green-400 font-medium">
-                Welcome, {user.firstName || user.username}
+                Welcome, {user?.firstName || user?.username || 'User'}
               </span>
-            )}
+            </div>
           </SignedIn>
 
           <Link to="/" className="text-green-400 hover:text-white transition duration-300 ease-in-out">Home</Link>
@@ -130,7 +158,7 @@ const Navbar = () => {
 
           <SignedIn>
             <SignOutButton>
-              <button className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-300 ease-in-out">
+              <button className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-300 ease-in-out w-full">
                 Logout
               </button>
             </SignOutButton>
@@ -139,7 +167,7 @@ const Navbar = () => {
           <SignedOut>
             <Link
               to="/sign-in"
-              className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-400 hover:text-white transition duration-300 ease-in-out font-medium"
+              className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-400 hover:text-white transition duration-300 ease-in-out font-medium text-center"
             >
               Signup/Login
             </Link>
