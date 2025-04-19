@@ -1,14 +1,14 @@
 import express from 'express';
-import userRoutes from './routes/userRoute'
-import activityRoutes from './routes/activityRoute'
+import userRoutes from './routes/userRoute';
+import activityRoutes from './routes/activityRoute';
 import reportRoutes from './routes/reportRoute';
 import suggetionRoutes from './routes/suggetionRoute';
-import emmisiontimeRoutes from './routes/emmisiontimeRoute';
+import declutterRoutes from './routes/declutterRoutes';
+import chatRoutes from './routes/chatRoute';
 import cors from 'cors';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
 
 // middlewares
 app.use(express.json());
@@ -21,23 +21,22 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 // cors
 app.use(
-    cors({
-      origin: "http://localhost:5173",
-      credentials: true,
-    })
-  );
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 // routes
-
 app.use('/api/user', userRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/suggestions', suggetionRoutes);
-app.use('/api/emissions', emmisiontimeRoutes);
+app.use('/api/declutter', declutterRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
 
 export default app;
