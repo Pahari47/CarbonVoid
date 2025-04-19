@@ -3,6 +3,7 @@ import userRoutes from './routes/userRoute'
 import activityRoutes from './routes/activityRoute'
 import reportRoutes from './routes/reportRoute';
 import suggetionRoutes from './routes/suggetionRoute';
+import emmisiontimeRoutes from './routes/emmisiontimeRoute';
 import cors from 'cors';
 
 const app = express();
@@ -32,6 +33,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/suggestions', suggetionRoutes);
+app.use('/api/emissions', emmisiontimeRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
