@@ -1,15 +1,54 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String              @id @default(uuid())
+  userId     String               @unique  // Stores Clerk's ID
+  name       String
+  email      String              @unique
+  activities Activity[]          @relation("UserActivities")
+  footprint  UserFootprintCache? @relation("UserFootprint")
+  reports    SustainabilityReport[]
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+}
+
+model Activity {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation("UserActivities", fields: [userId], references: [id])
+  service    String
+  duration   Int
+  dataUsed   Float
+  resolution String?
+  co2e       Float
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model UserFootprintCache {
+  userId        String   @id
+  totalCO2e     Float
+  activityCount Int
+  updatedAt     DateTime @updatedAt
+  user          User     @relation("UserFootprint", fields: [userId], references: [id])
+
+  @@index([totalCO2e])
+}
+
+model SustainabilityReport {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  generatedAt DateTime @default(now())
+  suggestions String[]
+  metrics     Json
 }
