@@ -1,7 +1,15 @@
+import * as clerk from "@clerk/chrome-extension";
+
+
 (() => {
     const site = location.hostname;
     const timestamp = new Date().toISOString();
-    
+    const check=async()=>{
+      console.log("clerk: ",clerk);
+      const user = clerk.useUser();
+      console.log("user:",user);
+    }
+    check();
 
     if (window.top !== window.self || window.location.href === 'about:blank') {
       console.log("Skipping execution in iframe or about:blank");
@@ -104,4 +112,3 @@
       // });
     });
   })();
-  

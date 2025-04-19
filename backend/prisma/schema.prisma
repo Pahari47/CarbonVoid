@@ -9,9 +9,10 @@ datasource db {
 
 model User {
   id         String              @id @default(uuid())
-  userId     String               @unique  // Stores Clerk's ID
+  userId     String              @unique
   name       String
   email      String              @unique
+  password   String?             @db.VarChar(255)
   activities Activity[]          @relation("UserActivities")
   footprint  UserFootprintCache? @relation("UserFootprint")
   reports    SustainabilityReport[]

@@ -1,16 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser, SignedIn, SignedOut, SignOutButton } from '@clerk/clerk-react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Navbar = () => {
-  const { user } = useUser();
+  const { isLoaded, user } = useUser();
   const [isOpen, setIsOpen] = useState(false);
+
+  // Function to send user data to backend
+  const sendUserToBackend = async (clerkUser) => {
+    if (!clerkUser) return;
+    
+    try {
+      const userData = {
+        userId: clerkUser.id,
+        name: clerkUser.fullName || clerkUser.username,
+        email: clerkUser.primaryEmailAddress?.emailAddress
+      };
+
+      const response = await fetch('/api/users/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${await clerkUser.getToken()}`
+        },
+        body: JSON.stringify(userData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to sync user data');
+      }
+      
+      const data = await response.json();
+      console.log('User synced successfully:', data);
+    } catch (error) {
+      console.error('Error syncing user:', error);
+    }
+  };
+
+  // Sync user data when user changes
+  useEffect(() => {
+    if (isLoaded && user) {
+      sendUserToBackend(user);
+    }
+  }, [isLoaded, user]);
 
   return (
     <motion.nav
-       className="w-full bg-black bg-opacity-30 backdrop-blur-lg sticky top-0 z-[100] px-6 py-4 transition-all duration-300 ease-in-out"
+      className="w-full bg-black bg-opacity-30 backdrop-blur-lg sticky top-0 z-[100] px-6 py-4 transition-all duration-300 ease-in-out"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -21,7 +59,7 @@ const Navbar = () => {
           CarboVoid
         </Link>
 
-        
+        {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-6 mx-auto">
           <Link to="/" className="text-green-400 hover:text-white transition duration-300 ease-in-out">Home</Link>
           <Link to="/about" className="text-green-400 hover:text-white transition duration-300 ease-in-out">About</Link>
@@ -30,7 +68,7 @@ const Navbar = () => {
           <Link to="/contact" className="text-green-400 hover:text-white transition duration-300 ease-in-out">Contact</Link>
         </div>
 
-        {/* Auth Buttons */}
+        {/* Auth Buttons - Desktop */}
         <div className="hidden md:flex items-center space-x-4">
           <SignedIn>
             <span className="text-green-400 font-medium">
@@ -76,7 +114,6 @@ const Navbar = () => {
           exit={{ opacity: 0, y: 50 }}
           transition={{ duration: 0.3 }}
         >
-          {/* Welcome text at top on mobile */}
           <SignedIn>
             {user && (
               <span className="text-green-400 font-medium">
@@ -85,14 +122,12 @@ const Navbar = () => {
             )}
           </SignedIn>
 
-          {/* Nav Links */}
           <Link to="/" className="text-green-400 hover:text-white transition duration-300 ease-in-out">Home</Link>
           <Link to="/about" className="text-green-400 hover:text-white transition duration-300 ease-in-out">About</Link>
           <Link to="/features" className="text-green-400 hover:text-white transition duration-300 ease-in-out">Features</Link>
           <Link to="/trends-insights" className="text-green-400 hover:text-white transition duration-300 ease-in-out">Trends & Insights</Link>
           <Link to="/contact" className="text-green-400 hover:text-white transition duration-300 ease-in-out">Contact</Link>
 
-          {/* Auth Buttons */}
           <SignedIn>
             <SignOutButton>
               <button className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-300 ease-in-out">

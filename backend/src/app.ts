@@ -23,8 +23,11 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 // cors
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    credentials: true,
+    origin: [
+      'chrome-extension://efblchoephakkkdnedekllohlnfdaffp', // get this from `chrome://extensions`
+      'http://localhost:5173' // if needed for dev
+    ],
+    credentials: true
   })
 );
 

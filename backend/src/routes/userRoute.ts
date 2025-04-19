@@ -4,11 +4,15 @@ import { UserController } from "../controllers/userController";
 const router = Router();
 
 // Clerk sync endpoint
-router.post("/users/sync", UserController.syncUser);
+router.post("/sync", UserController.syncUser);
+
+// Authentication
+router.post("/register", UserController.createUser);
+router.post("/login", UserController.login);
 
 // Standard CRUD endpoints
-router.get("/users/:userId", UserController.getUser);
-router.put("/users/:userId", UserController.updateUser);
-router.delete("/users/:userId", UserController.deleteUser);
+router.get("/:userId", UserController.getUser);
+router.put("/:userId", UserController.updateUser);
+router.delete("/:userId", UserController.deleteUser);
 
 export default router;

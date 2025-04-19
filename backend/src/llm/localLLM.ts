@@ -1,4 +1,4 @@
-import { ChatOllama } from 'langchain/chat_models/ollama';
+import { ChatOllama } from '@langchain/community/chat_models/ollama';
 import dotenv from 'dotenv';
 
 dotenv.config();
