@@ -16,35 +16,30 @@ const About = () => {
     <section className="relative min-h-screen bg-gradient-to-b from-emerald-950 to-black text-white px-6 py-20 overflow-hidden">
       {/* Floating Leaves Emoji in the Background */}
       <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
-        {[...Array(30)].map((_, index) => {
-          const startX = Math.random() * 100;
-          const xDrift = Math.random() * 16 - 8; // Closer horizontal spread
-
-          return (
-            <motion.div
-              key={index}
-              className="absolute text-3xl"
-              style={{
-                top: `${Math.random() * 100}vh`,
-                left: `${startX}vw`,
-                animationDelay: `${Math.random() * 5}s`,
-                opacity: Math.random() * 0.5 + 0.5,
-                transform: `rotate(${Math.random() * 360}deg)`,
-              }}
-              animate={{
-                y: ["0", "110vh"],
-                x: [`${startX}vw`, `${startX + xDrift}vw`],
-              }}
-              transition={{
-                duration: Math.random() * 20 + 20, // 20–40s
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            >
-              🍃
-            </motion.div>
-          );
-        })}
+        {[...Array(30)].map((_, index) => (
+          <motion.div
+            key={index}
+            className="absolute text-3xl"
+            style={{
+              top: `${Math.random() * 100}vh`,  // Random vertical position (viewport height)
+              left: `${Math.random() * 100}vw`, // Random horizontal position (viewport width)
+              animationDelay: `${Math.random() * 5}s`,  // Random delay for each leaf
+              animationDuration: `${Math.random() * 20 + 20}s`,  // Increased animation duration (slower)
+              opacity: Math.random() * 0.5 + 0.5,  // Random opacity for organic effect
+              transform: `rotate(${Math.random() * 360}deg)`, // Random rotation for each leaf
+            }}
+            animate={{
+              y: ["0", "100vh"],  // Moving leaf down vertically
+              x: ["0", `${Math.random() * 10 - 5}vw`], // Slower horizontal float left and right (less movement)
+            }}
+            transition={{
+              repeat: Infinity,
+              ease: "linear",  // Smooth and steady movement
+            }}
+          >
+            🍃
+          </motion.div>
+        ))}
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto pb-32">
@@ -76,10 +71,7 @@ const About = () => {
           className="grid md:grid-cols-2 gap-6"
         >
           {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-emerald-900/30 p-6 rounded-2xl backdrop-blur-md hover:bg-green-700/10 transition border border-green-400/20 shadow hover:shadow-emerald-400/30"
-            >
+            <div key={index} className="bg-emerald-900/30 p-6 rounded-2xl backdrop-blur-md hover:bg-green-700/10 transition border border-green-400/20 shadow hover:shadow-emerald-400/30">
               <h3 className="text-xl font-semibold text-lime-300 transition duration-300">
                 {feature}
               </h3>

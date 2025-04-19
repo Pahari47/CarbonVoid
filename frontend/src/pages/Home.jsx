@@ -194,36 +194,31 @@ const Home = () => {
               icon: "⚡",
               title: "Personalized Carbon Reports",
               desc: "Detailed breakdown of emissions.",
-              link: "/dashboard",
             },
             {
               icon: "🌱",
               title: "Green Suggestions Assistant",
               desc: "AI-driven reduction tips.",
-              link: "green-suggestions",
             },
             {
               icon: "🧼",
               title: "Digital Declutter Assistant",
               desc: "Remove digital waste efficiently.",
-              link: "/declutter",
             },
             {
               icon: "📊",
               title: "ESG Report Generator",
               desc: "Environmental & social reports.",
-              link: "/esg-report",
             },
-          ].map(({ icon, title, desc, link }) => (
-            <Link
+          ].map(({ icon, title, desc }) => (
+            <div
               key={title}
-              to={link}
               className="bg-white/10 text-white p-6 rounded-2xl shadow-xl hover:bg-white/20 transition-all duration-300 text-center"
             >
               <div className="text-4xl mb-4">{icon}</div>
               <h3 className="text-xl font-semibold mb-2">{title}</h3>
               <p>{desc}</p>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
