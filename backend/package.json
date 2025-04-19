@@ -19,10 +19,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "googleapis": "^148.0.0",
-<<<<<<< HEAD
-=======
     "langchain": "^0.3.23",
->>>>>>> 06f394758d506eb6396cae6881aa7a66da7cdae7
     "nodemon": "^3.1.9",
     "pdfkit": "^0.17.0",
     "prisma": "^6.6.0",

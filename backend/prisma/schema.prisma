@@ -52,3 +52,9 @@ model SustainabilityReport {
   suggestions String[]
   metrics     Json
 }
+
+model DeclutterLog {
+  id          String   @id @default(uuid())
+  suggestions String
+  createdAt   DateTime @default(now())
+}

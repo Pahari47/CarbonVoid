@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { fetchDeclutterSuggestions } from '../services/DeclutterService';
-//import prisma from '../prisma'; // Adjust the import based on your project structure
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export const getDeclutterSuggestions = async (req: Request, res: Response) => {
   try {
