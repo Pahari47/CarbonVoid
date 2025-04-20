@@ -366,7 +366,7 @@ const TrendsInsights = () => {
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">Today's Emission</p>
+                <p className="text-sm font-medium text-gray-500">Yesterday's Emission</p>
                 <p className="text-2xl font-bold text-gray-800 mt-1">{mainChartData?.datasets[0].data[0] || '0.00'} kg</p>
               </div>
               <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center">
@@ -378,7 +378,7 @@ const TrendsInsights = () => {
           </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">Yesterday's Emission</p>
+                <p className="text-sm font-medium text-gray-500">Today's Emission</p>
                 <p className="text-2xl font-bold text-gray-800 mt-1">{mainChartData?.datasets[0].data[1] || '0.00'} kg</p>
               </div>
               <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
