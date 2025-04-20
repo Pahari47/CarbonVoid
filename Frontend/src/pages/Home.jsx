@@ -409,11 +409,11 @@ const Home = () => {
               className="mb-8"
             >
               <p className="text-lg text-gray-200 mb-6">
-                Welcome back,{" "}
+                {/* Welcome back,{" "}
                 <span className="font-semibold bg-gradient-to-r from-green-300 to-emerald-400 bg-clip-text text-transparent">
                   {user?.firstName || user?.username}
-                </span>
-                !
+                </span> */}
+                Welcome back, User!
               </p>
               <motion.div
                 whileHover={{ scale: 1.02 }}
@@ -562,21 +562,21 @@ const Home = () => {
             },
             {
               icon: <FaMagic className="text-4xl" />,
-              title: "AI Suggestions",
+              title: "Green Suggestions",
               desc: "Personalized recommendations to reduce your footprint without sacrificing productivity.",
               link: "green-suggestions",
               color: "from-purple-500 to-indigo-600",
             },
             {
               icon: <FaDatabase className="text-4xl" />,
-              title: "Digital Cleanup",
+              title: "Digital Declutter",
               desc: "Identify and eliminate digital waste that's silently emitting CO₂.",
               link: "/declutter",
               color: "from-blue-500 to-cyan-600",
             },
             {
               icon: <FaChartLine className="text-4xl" />,
-              title: "Ai ChatBot",
+              title: "GreenBot",
               desc: "Chat instantly with our AI to get answers and insights on reducing your carbon footprint.",
               link: "#",
               color: "from-amber-500 to-orange-600",
