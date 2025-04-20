@@ -15,9 +15,9 @@
 
 ## ✨ Why CarboVoid?  
 Digital activities emit **1.6 billion tons of CO₂ yearly** (equivalent to global aviation!). CarboVoid helps you:  
-- 📊 **Visualize** hidden emissions from streaming, cloud storage, and emails.  
+- 📊 **Visualise** hidden emissions from streaming, cloud storage, and emails.  
 - 🤖 **Automate** carbon savings with AI-powered agents.  
-- 🌱 **Act** on personalized, region-aware green suggestions.  
+- 🌱 **Act** on personalised, region-aware green suggestions.  
 
 ---
 
@@ -27,6 +27,7 @@ Digital activities emit **1.6 billion tons of CO₂ yearly** (equivalent to glob
 | `DeclutterAgent`        | Finds & deletes redundant cloud/email data        | LangChain.js + Mistral (Ollama) |  
 | `GreenSuggestionAgent`  | Recommends low-carbon alternatives in real-time   | Google Generative AI         |  
 | `CarbonChatBot`         | Answers sustainability queries conversationally   | GROQ API + Mistral           |  
+
 
 ---
 
