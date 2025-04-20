@@ -17,7 +17,7 @@ export default function Features() {
       bgColor: "bg-gradient-to-br from-green-500/10 to-teal-600/10",
     },
     {
-      title: "Green Suggestions Assistant",
+      title: "Green Suggestions",
       description: "Get eco-friendly recommendations to reduce emissions from emails, storage, streaming, and more.",
       icon: <Leaf className="w-8 h-8" />,
       link: "/green-suggestions",
@@ -25,7 +25,7 @@ export default function Features() {
       bgColor: "bg-gradient-to-br from-emerald-500/10 to-cyan-600/10",
     },
     {
-      title: "Digital Declutter Assistant",
+      title: "Digital Declutter",
       description: "Automatically identify and clean up unused files, subscriptions, or cloud storage to save energy.",
       icon: <Trash2 className="w-8 h-8" />,
       link: "/declutter",
@@ -33,7 +33,7 @@ export default function Features() {
       bgColor: "bg-gradient-to-br from-amber-500/10 to-yellow-600/10",
     },
     {
-      title: "AI Sustainability Coach",
+      title: "GreenBot",
       description: "Personalized recommendations to reduce your footprint without sacrificing productivity.",
       icon: <Building2 className="w-8 h-8" />,
       link: "/ai-coach",
