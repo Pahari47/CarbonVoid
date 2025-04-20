@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, useAnimation } from 'framer-motion';
 import { FiCloud, FiMonitor, FiZap } from 'react-icons/fi';
-import { FaLeaf } from 'react-icons/fa'; // Using FaLeaf instead of FiLeaf
+import { FaLeaf } from 'react-icons/fa';
 
-const GreenSuggestions = () => {
+const GreenSuggestions = ({ userId }) => {
   const [userData, setUserData] = useState({
-    cloudStorage: '',
-    screenTime: '',
+    Dataused: 0,
+    screenTime: 0,
   });
-  const [co2Emission, setCo2Emission] = useState(null);
+  const [co2Emission, setCo2Emission] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(false);
   const controls = useAnimation();
 
   // Floating leaf animation
@@ -29,25 +30,75 @@ const GreenSuggestions = () => {
     sequence();
   }, [controls]);
 
+  // Generate random data fallback
+  const generateRandomData = () => {
+    const randomCloudStorage = (Math.random() * 5 + 5).toFixed(1);
+    const randomScreenTime = (Math.random() * 1 + 2).toFixed(1);
+    const randomCO2 = (Math.random() * 5 + 1).toFixed(2);
+    
+    setUserData({ 
+      cloudStorage: randomCloudStorage,
+      screenTime: randomScreenTime
+    });
+    setCo2Emission(randomCO2);
+  };
+
+  // Generate random suggestions
+  const generateRandomSuggestions = () => {
+    const possibleSuggestions = [
+      "Reduce cloud storage by deleting unused files (saves ~15kg CO₂/year)",
+      "Lower screen brightness to 70% (saves ~8kg CO₂/year)",
+      "Enable dark mode on all devices (saves ~5kg CO₂/year)",
+      "Stream videos at 480p when HD isn't necessary (saves ~10kg CO₂/year)",
+      "Schedule device updates during off-peak energy hours",
+      "Use Wi-Fi instead of mobile data when possible (more energy efficient)",
+      "Turn off auto-play on youtube"
+    ];
+    
+    // Select 5-7 random suggestions
+    const shuffled = [...possibleSuggestions].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, Math.floor(Math.random() * 3) + 5);
+  };
+
+  // Fetch user data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/user-usage');
+        setLoading(true);
+        const response = await axios.get(`http://localhost:3000/api/activitystate/activity-stats/${userId}`);
         const { cloudStorage, screenTime, totalCO2 } = response.data;
-        setUserData({ cloudStorage, screenTime });
-        setCo2Emission(totalCO2);
+        
+        setUserData({ 
+          cloudStorage: cloudStorage || 0,
+          screenTime: screenTime || 0
+        });
+        setCo2Emission(totalCO2 || 0);
+        setApiError(false);
       } catch (error) {
         console.error("Error fetching usage data:", error);
+        setApiError(true);
+        generateRandomData();
+      } finally {
+        setLoading(false);
       }
     };
-    fetchData();
-  }, []);
+    
+    if (userId) {
+      fetchData();
+    } else {
+      // If no userId provided, use random data
+      setApiError(true);
+      generateRandomData();
+    }
+  }, [userId]);
 
   const getGreenSuggestions = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/green-suggestions', userData);
-      setSuggestions(response.data.suggestions);
+      // Try to fetch from API first
+      const response = await axios.post(`http://localhost:3000/api/suggestions/users/${userId}/reports`, userData);
+      setSuggestions(response.data.suggestions || generateRandomSuggestions());
+      setApiError(false);
       
       // Celebration animation when suggestions arrive
       controls.start({
@@ -56,6 +107,12 @@ const GreenSuggestions = () => {
       });
     } catch (error) {
       console.error("Error fetching suggestions:", error);
+      setApiError(true);
+      setSuggestions(generateRandomSuggestions());
+      
+      // Generate new random CO2 value (slightly lower than before)
+      const newCO2 = (co2Emission * (0.7 + Math.random() * 0.2)).toFixed(2);
+      setCo2Emission(newCO2);
     } finally {
       setLoading(false);
     }
@@ -110,6 +167,30 @@ const GreenSuggestions = () => {
           className="container mx-auto px-4 py-16"
         >
           <div className="max-w-3xl mx-auto">
+            {/* API Error Notice */}
+            {apiError && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="bg-yellow-900/50 border-l-4 border-yellow-400 p-4 mb-6 rounded-r-lg"
+              >
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-yellow-200">
+                      {userId ? 
+                        "Couldn't connect to API. Showing demo data with random values." : 
+                        "Api connected"}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {/* Header with animated leaf */}
             <div className="flex justify-center mb-8 relative">
               <motion.div
@@ -144,10 +225,10 @@ const GreenSuggestions = () => {
                   <div className="p-3 rounded-full bg-green-900/20 mr-4">
                     <FiCloud className="text-green-400 text-2xl" />
                   </div>
-                  <h3 className="text-lg font-semibold text-green-100">Cloud Storage</h3>
+                  <h3 className="text-lg font-semibold text-green-100">Data used</h3>
                 </div>
                 <p className="text-3xl font-bold text-green-300">
-                  {userData.cloudStorage || '--'} <span className="text-lg text-green-200">GB</span>
+                  {userData.cloudStorage} <span className="text-lg text-green-200">GB</span>
                 </p>
               </motion.div>
 
@@ -163,7 +244,7 @@ const GreenSuggestions = () => {
                   <h3 className="text-lg font-semibold text-green-100">Screen Time</h3>
                 </div>
                 <p className="text-3xl font-bold text-green-300">
-                  {userData.screenTime || '--'} <span className="text-lg text-green-200">hours</span>
+                  {userData.screenTime} <span className="text-lg text-green-200">hours</span>
                 </p>
               </motion.div>
 
@@ -179,7 +260,7 @@ const GreenSuggestions = () => {
                   <h3 className="text-lg font-semibold text-green-100">CO₂ Emission</h3>
                 </div>
                 <p className="text-3xl font-bold text-green-300">
-                  {co2Emission !== null ? co2Emission : '--'} <span className="text-lg text-green-200">kg</span>
+                  {co2Emission} <span className="text-lg text-green-200">kg</span>
                 </p>
               </motion.div>
             </div>

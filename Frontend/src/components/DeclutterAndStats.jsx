@@ -61,16 +61,8 @@ const DeclutterAndStats = ({ suggestions, stats }) => {
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-green-100">
           <ul className="space-y-4 text-gray-700 text-sm md:text-base">
             <li className="flex justify-between items-center">
-              <span className="font-medium">🎥 Video Streaming:</span>
-              <span className="text-green-600 font-semibold">{stats.videoStreaming} kg CO₂</span>
-            </li>
-            <li className="flex justify-between items-center">
-              <span className="font-medium">☁️ Cloud Storage:</span>
-              <span className="text-green-600 font-semibold">{stats.cloudStorage} kg CO₂</span>
-            </li>
-            <li className="flex justify-between items-center">
-              <span className="font-medium">📞 Video Calls:</span>
-              <span className="text-green-600 font-semibold">{stats.videoCalls} kg CO₂</span>
+              <span className="font-medium">🎥 youtube:</span>
+              <span className="text-green-600 font-semibold">{stats.videoStreaming} g CO₂</span>
             </li>
           </ul>
         </div>

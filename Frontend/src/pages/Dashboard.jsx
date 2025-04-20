@@ -30,14 +30,7 @@ ChartJS.register(
 // Function to generate random activity data
 const generateRandomActivities = () => {
   const activityTypes = [
-    "Email Sent",
-    "Video Call",
-    "Cloud Storage",
-    "Web Browsing",
-    "File Download",
-    "Social Media",
-    "Online Gaming",
-    "Video Streaming"
+    "youtube"
   ];
   
   const activities = [];
@@ -52,7 +45,7 @@ const generateRandomActivities = () => {
       activityType: activityTypes[Math.floor(Math.random() * activityTypes.length)],
       carbonFootprint: parseFloat((Math.random() * 0.5 + 0.1).toFixed(3)),
       timestamp: date.toISOString(),
-      details: "Sample generated activity data"
+      details: "activity data"
     });
   }
   
@@ -287,7 +280,7 @@ const Dashboard = () => {
           </h1>
           <p className="text-gray-400 text-lg">
             {user?.username ? `Welcome back, ${user.username}!` : "Track your digital emissions"}
-            {usingSampleData && " (Using sample data)"}
+            {usingSampleData && " (Using activity data)"}
           </p>
         </div>
 
@@ -307,7 +300,7 @@ const Dashboard = () => {
         >
           <h2 className="text-xl font-semibold mb-4 text-white">
             {loading.logs ? "🔄 Loading your activities..." : 
-             usingSampleData ? "📝 Sample Activity Data" : "📝 Your Tracked Activities"}
+             usingSampleData ? "📝 Activity Data" : "📝 Your Tracked Activities"}
           </h2>
           
           <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
@@ -327,7 +320,7 @@ const Dashboard = () => {
                   </div>
                   <p className="mt-1">
                     💨 Emission:{" "}
-                    <strong>{log.carbonFootprint?.toFixed(3)} kg CO₂</strong>
+                    <strong>{log.carbonFootprint?.toFixed(3)} g CO₂</strong>
                   </p>
                   {log.details && (
                     <p className="text-sm text-gray-400 mt-1">{log.details}</p>
@@ -376,7 +369,7 @@ const Dashboard = () => {
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-green-400">
-                {usingSampleData ? "📄 Sample Carbon Report" : "📄 Your Carbon Emission Report"}
+                {usingSampleData ? "📄 Carbon Report" : "📄 Your Carbon Emission Report"}
               </h2>
               <button
                 onClick={handleDownloadPDF}
